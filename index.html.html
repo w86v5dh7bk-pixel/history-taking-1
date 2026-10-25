@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>استبيان التاريخ المرضي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f4f3;--surface:#ffffff;--text:#1d2a2c;--muted:#66767a;--line:#dde4e2;
+  --teal:#1f6f6b;--teal-soft:#e2efed;--plum:#7d3f5c;--plum-soft:#f5e9ef;--no:#a3443a;--no-soft:#f7e6e3;
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111716;--surface:#1a2221;--text:#e6ecea;--muted:#97a6a3;--line:#2b3533;
+  --teal:#62bab2;--teal-soft:#1b3330;--plum:#d79bb8;--plum-soft:#352530;--no:#e58b7f;--no-soft:#3a2420;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111716;--surface:#1a2221;--text:#e6ecea;--muted:#97a6a3;--line:#2b3533;
+  --teal:#62bab2;--teal-soft:#1b3330;--plum:#d79bb8;--plum-soft:#352530;--no:#e58b7f;--no-soft:#3a2420;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,system-ui,sans-serif;line-height:1.55;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px 6px;max-width:720px;margin:0 auto}
+.ttl b{display:block;font-size:1.05rem;color:var(--plum)}
+.ttl span{font-size:.78rem;color:var(--muted)}
+.ghost{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-size:.85rem}
+.ghost.warn{border-color:var(--no);color:var(--no)}
+#steps{display:flex;gap:6px;overflow-x:auto;padding:4px 16px 10px;max-width:720px;margin:0 auto;scrollbar-width:none}
+#steps::-webkit-scrollbar{display:none}
+#steps button{flex:none;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 11px;font-size:.82rem;white-space:nowrap}
+#steps button.cur{background:var(--teal);border-color:var(--teal);color:#fff}
+#steps button.sym:not(.cur){border-color:var(--plum);color:var(--plum)}
+#steps small{opacity:.75;margin-inline-start:4px}
+
+main{max-width:720px;margin:0 auto;padding:18px 16px 120px}
+.kick{color:var(--teal);font-size:.85rem;font-weight:600}
+h1{font-size:1.55rem;margin:2px 0 0;color:var(--plum);line-height:1.3}
+h1 + .en{margin-bottom:12px}
+.en{direction:ltr;text-align:left;color:var(--muted);font-size:.85rem}
+
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0}
+.q.add{border-inline-start:3px solid var(--plum)}
+.q .ar{font-size:1.04rem;font-weight:600}
+.plus{color:var(--plum);font-weight:700;margin-inline-end:4px}
+.row{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.yn{display:flex;gap:6px}
+.yn button{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:7px 14px;min-width:56px}
+.yn button[data-v="y"].on{background:var(--teal);border-color:var(--teal);color:#fff}
+.yn button[data-v="n"].on{background:var(--no);border-color:var(--no);color:#fff}
+input.t,input.f,textarea{flex:1;min-width:140px;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 10px}
+textarea{width:100%;min-height:90px;resize:vertical}
+.h{color:var(--teal);font-weight:700;margin:22px 2px 2px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.h .en{color:var(--teal);opacity:.8}
+.note{background:var(--plum-soft);color:var(--plum);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:.92rem}
+.script{background:var(--teal-soft);border-radius:10px;padding:10px 12px;margin:8px 0}
+.script .ar{font-weight:600}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.fields label{display:flex;flex-direction:column;font-size:.82rem;color:var(--muted);gap:4px}
+.fields input{min-width:0}
+.seg{display:flex;gap:6px;margin-top:8px}
+.seg button{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:7px 14px}
+.seg button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+
+.pick{background:var(--surface);border:2px solid var(--plum);border-radius:14px;padding:14px;margin:12px 0}
+.pick .ar{font-size:1.1rem;font-weight:700;color:var(--plum)}
+.grp{margin-top:12px}
+.grp > div:first-child{font-size:.8rem;color:var(--muted);margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:6px 10px;text-align:right;line-height:1.25}
+.chips button small{display:block;direction:ltr;text-align:left;color:var(--muted);font-size:.72rem}
+.chips button.on{background:var(--plum);border-color:var(--plum);color:#fff}
+.chips button.on small{color:#fff;opacity:.85}
+.chips button .n{display:inline-block;background:#fff;color:var(--plum);border-radius:999px;font-size:.7rem;padding:0 6px;margin-inline-start:4px}
+
+details.tips{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0}
+details.tips summary{cursor:pointer;color:var(--teal);font-weight:600}
+details.tips li{margin:4px 0;font-size:.92rem}
+
+.sum{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;white-space:pre-wrap;direction:ltr;text-align:left;font-size:.9rem;line-height:1.6;overflow-x:auto;margin:12px 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.pri{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:9px 18px;font-weight:600}
+.empty{color:var(--muted);font-size:.92rem}
+
+footer{position:fixed;bottom:0;left:0;right:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+footer .in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+footer button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 16px;font-weight:600}
+footer button.pri{background:var(--teal);border-color:var(--teal);color:#fff}
+footer button:disabled{opacity:.4;cursor:default}
+#pos{font-size:.85rem;color:var(--muted);text-align:center}
+@media (max-width:420px){.fields{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.yn button,.chips button{transition:background .12s}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="ttl"><b>استبيان التاريخ المرضي</b><span dir="ltr">History taking · English + Arabic</span></div>
+    <button id="newPt" class="ghost" type="button">مريض جديد</button>
+  </div>
+  <nav id="steps" aria-label="الأقسام"></nav>
+</header>
+<main id="main"></main>
+<footer><div class="in">
+  <button id="prev" type="button">السابق</button>
+  <span id="pos"></span>
+  <button id="next" class="pri" type="button">التالي</button>
+</div></footer>
+
+<script>
+const C={
+start:"When did it start?|متى بدأت المشكلة؟",
+onset:"Did it start suddenly or gradually?|بدأت فجأة أو بالتدريج؟",
+course:"Is it getting worse, improving, or staying the same?|هل تزيد، تتحسن، أو ثابتة؟",
+cont:"Is it there all the time, or does it come and go?|هل هي مستمرة أو تجي وتروح؟",
+where:"Where exactly is the pain? Can you point to it?|وين الألم بالضبط؟ تقدر تشير لمكانه؟",
+pdesc:"How would you describe it: sharp, dull, burning, or cramping?|كيف توصفه: حاد، وجع ثقيل، حرقان، أو مغص؟",
+pspread:"Does the pain spread anywhere else?|هل ينتقل الألم لأي مكان ثاني؟",
+pwhen:"When does it happen, and how long does each episode last?|متى يجي الألم؟ وكم تستمر كل نوبة؟",
+pworse:"Does anything make it worse?|هل فيه شيء يزيد الألم؟",
+pbetter:"Does anything make it better?|هل فيه شيء يخفف الألم؟",
+pscale:"On a scale of 0 to 10, how severe is it?|من صفر إلى عشرة، كم شدة الألم؟",
+paffect:"How does it affect your daily activities or sleep?|كيف يؤثر على نشاطك اليومي أو نومك؟",
+worse:"Does anything make it worse or better?|هل فيه شيء يزيده أو يخففه؟",
+AS:"#Associated symptoms|الأعراض المصاحبة",
+fever:"Have you had a fever?|هل جتك حرارة؟",
+cough:"Have you had a cough?|هل عندك كحة؟",
+palp:"Have you felt your heart racing or pounding?|هل تحس بتسارع أو خفقان بالقلب؟",
+sob:"Have you felt short of breath?|هل تحس بضيق في التنفس؟",
+orth:"Do you get short of breath when lying flat?|هل يضيق نفسك إذا استلقيت بشكل مسطح؟",
+pnd:"Do you wake from sleep gasping for breath?|هل تصحى من النوم وأنت تلهث أو مخنوق؟",
+faint:"Have you fainted or nearly fainted?|هل أغمي عليك أو حسيت إنك بتغمى عليك؟",
+claud:"Do you get leg or buttock pain when walking?|هل يجيك ألم بالساق أو الأرداف مع المشي؟",
+swell:"Have your feet, ankles, or legs become swollen?|هل لاحظت تورم بقدميك أو كاحليك أو ساقيك؟",
+dizzy:"Have you felt dizzy or lightheaded?|هل تحس بدوخة أو خفة بالرأس؟",
+chest:"Have you had any chest pain?|هل عندك ألم بالصدر؟",
+wheeze:"Have you noticed a whistling sound when you breathe?|هل تسمع صفيرا مع التنفس؟",
+wtloss:"Have you lost weight without trying? How much and over how long?|هل نزل وزنك بدون قصد؟ كم كيلو وخلال كم مدة؟",
+appetite:"Have you lost your appetite?|هل قلت شهيتك؟",
+nausea:"Have you felt sick to your stomach?|هل تحس بغثيان؟",
+vomit:"Have you been vomiting?|هل عندك استفراغ؟",
+abd:"Have you had any abdominal pain?|هل عندك ألم بالبطن؟",
+heartburn:"Do you get a burning feeling behind your breastbone?|هل تحس بحرقة خلف عظمة الصدر؟",
+hemat:"Have you vomited blood or material like coffee grounds?|هل استفرغت دما أو مادة تشبه تفل القهوة؟",
+dysp:"Do you get upper abdominal discomfort or feel full after a small meal?|هل تحس بانزعاج أعلى البطن أو شبع بعد أكل قليل؟",
+bloat:"Has your abdomen become swollen or bloated?|هل بطنك منتفخ أو زاد حجمه؟",
+constip:"Have you had constipation or difficulty passing stool?|هل عندك إمساك أو صعوبة في إخراج البراز؟",
+loose:"Have you had loose or watery stools?|هل عندك براز رخو أو مائي؟",
+prbleed:"Have you noticed fresh blood in or on your stools?|هل لاحظت دما أحمر مع البراز أو على سطحه؟",
+melena:"Have you passed black, sticky, tar-like stools?|هل صار البراز أسود ولزج مثل القطران؟",
+dysuria:"Does it hurt or burn when you pass urine?|هل فيه ألم أو حرقان وقت التبول؟",
+polyuria:"Are you passing a larger total amount of urine than usual?|هل كمية البول الإجمالية أكثر من المعتاد؟",
+anuria:"Have you stopped passing urine altogether? Since when?|هل توقف خروج البول تماما؟ من متى؟",
+hematuria:"Have you noticed blood in your urine?|هل لاحظت دما بالبول؟",
+urgency:"Do you suddenly need to urinate and find it hard to hold on?|هل تجيك رغبة مفاجئة بالتبول ويصعب تأجيلها؟",
+leak:"Does urine ever leak before you reach the toilet?|هل يتسرب البول قبل ما توصل للحمام؟",
+discharge:"Have you noticed any discharge from the genital area?|هل لاحظت إفرازات من المنطقة التناسلية؟",
+flank:"Have you had pain in your side or back below the ribs?|هل عندك ألم بالجنب أو الظهر تحت الأضلاع؟",
+supra:"Have you had pain in the lower abdomen above the pubic bone?|هل عندك ألم أسفل البطن فوق عظمة العانة؟",
+rash:"Have you noticed a skin rash?|هل لاحظت طفحا جلديا؟",
+joint:"Have you had any joint pain or swelling?|هل عندك ألم أو تورم بالمفاصل؟",
+nightsw:"Do you have night sweats?|هل تتعرق أثناء الليل؟",
+tired:"Have you felt unusually tired?|هل تحس بتعب أكثر من المعتاد؟",
+headache:"Have you had headaches?|هل عندك صداع؟",
+hypo:"Do you feel unusually cold, tired, or constipated, or have you gained weight?|هل تحس ببرد غير معتاد، تعب، إمساك، أو زيادة وزن؟",
+dysphagia:"Do you have difficulty swallowing?|هل عندك صعوبة في البلع؟",
+odyn:"Is swallowing painful?|هل البلع مؤلم؟"
+};
+const B=["@start","@onset","@course","@cont"];
+
+const SYM=[
+{id:"chest",g:"cvs",ar:"ألم الصدر",en:"Chest pain",items:["@where","@start","@onset","@course","@cont",
+"Were you resting or doing something when it began?|كنت مرتاح أو تسوي مجهود وقت ما بدأ؟",
+"How would you describe the pain in your own words?|كيف توصف الألم بكلامك؟",
+"Is it sharp or stabbing, heavy or tight, pressure-like, squeezing, tearing, or burning?|هل هو حاد أو مثل الطعن، ثقل أو ضيق، ضغط أو عصر، تمزق، أو حرقان؟",
+"Does it spread to your shoulder, arm, jaw, back, or anywhere else?|هل ينتقل للكتف، الذراع، الفك، الظهر، أو أي مكان ثاني؟",
+"When does it occur? Is there a particular time of day?|متى يجي؟ هل له وقت معين باليوم؟",
+"How often does it happen, and how long does each episode last?|كم مرة يتكرر؟ وكم تستمر النوبة؟",
+"Is it worse with physical activity or emotional stress?|هل يزيد مع المجهود أو الضغط النفسي؟",
+"Does breathing deeply, coughing, moving, or lying down make it worse?|هل يزيد مع النفس العميق، الكحة، الحركة، أو الاستلقاء؟",
+"Does rest, sitting forward, or an antacid help?|هل يخف مع الراحة، الجلوس والميل للأمام، أو مضاد الحموضة؟",
+"If you used prescribed nitroglycerin under the tongue, did it help?|إذا استخدمت نيتروغليسرين موصوفا تحت اللسان، هل خف الألم؟",
+"On a scale of 0 to 10, how severe is it? Does it limit your activities?|من صفر لعشرة، كم شدة الألم؟ وهل يمنع نشاطك؟",
+"@AS","@dysphagia","@cough","@fever","@palp","@sob","@orth","@pnd","@faint","@claud","@swell","@dizzy",
+"+Did it reach its worst intensity immediately?|هل وصل لأشد درجة من أول لحظة؟",
+"+Have you had sweating, nausea, or vomiting with the pain?|هل معه تعرق، غثيان، أو استفراغ؟",
+"+Have you had a recent operation, long journey, prolonged bed rest, or a previous blood clot?|هل سويت عملية، سافرت سفرا طويلا، جلست بالفراش مدة طويلة، أو سبق جتك جلطة؟",
+"+Is one leg newly swollen or painful?|هل فيه تورم أو ألم جديد بساق واحدة؟",
+"!Relief with nitroglycerin or antacids does not confirm the cause.|التحسن بالنيتروغليسرين أو مضاد الحموضة لا يؤكد سبب الألم."]},
+{id:"sob",g:"cvs",ar:"ضيق التنفس",en:"Shortness of breath",items:[...B,
+"What activities bring on the breathlessness?|وش الأنشطة اللي تسبب لك ضيق النفس؟",
+"Does it happen only with strenuous exercise, or with ordinary activity?|هل يصير فقط مع التمرين الشديد أو حتى مع النشاط المعتاد؟",
+"How far can you walk, and how many stairs can you climb before stopping?|كم مسافة تقدر تمشي؟ وكم درجة سلم تطلع قبل توقف؟",
+"Do you get breathless after a few minutes of walking or while at rest?|هل يضيق نفسك بعد دقائق مشي أو حتى وأنت مرتاح؟",
+"+Do you need extra pillows to breathe comfortably? How many?|هل تحتاج مخدات إضافية عشان تتنفس براحة؟ كم مخدة؟",
+"+When you wake gasping, does sitting or standing help? How long does it take?|إذا صحيت مخنوق، هل يخف بالجلوس أو الوقوف؟ وخلال كم دقيقة؟",
+"@AS","@cough","@fever","@palp","@orth","@pnd","@faint","@claud","@swell","@chest","@dizzy","@wheeze",
+"Do you feel heaviness or tightness in your chest?|هل تحس بثقل أو ضيق بالصدر؟",
+"+Have you coughed up blood or had new pain or swelling in one leg?|هل كحيت دما أو ظهر ألم أو تورم جديد بساق واحدة؟",
+"+Do you have asthma or lung disease? Do inhalers help?|هل عندك ربو أو مرض بالرئة؟ وهل تفيدك البخاخات؟",
+"+Have you had recent immobility, surgery, long travel, or hormone treatment?|هل قلت حركتك، سويت عملية، سافرت طويلا، أو أخذت هرمونات مؤخرا؟",
+"+~Are you currently pregnant or have you recently given birth?|هل أنتِ حامل حاليا أو ولدتي مؤخرا؟"]},
+{id:"palp",g:"cvs",ar:"الخفقان",en:"Palpitations",items:[...B,
+"How does your heartbeat feel: fast, strong, pounding, fluttering, or skipping?|كيف تحس بالنبض: سريع، قوي، يدق بقوة، يرفرف، أو كأنه يفوت نبضة؟",
+"Does it feel regular or irregular? Could you tap out the rhythm?|تحسه منتظم أو غير منتظم؟ ممكن تقلد إيقاعه بالنقر؟",
+"Does caffeine, exercise, or stress make it worse?|هل يزيد مع الكافيين، التمرين، أو التوتر؟",
+"Does resting, breathing slowly, or lying down make it better?|هل يخف مع الراحة، التنفس بهدوء، أو الاستلقاء؟",
+"How does it affect your daily activities?|كيف يؤثر على نشاطك اليومي؟",
+"+How long does each episode last, and how often does it happen?|كم تستمر النوبة؟ وكم مرة تتكرر؟",
+"+Does it stop abruptly or slow down gradually?|هل يتوقف فجأة أو يهدأ بالتدريج؟",
+"@AS","@cough","@fever","@orth","@pnd","@faint","@claud","@swell","@chest","@dizzy","@sob",
+"Do you feel chest heaviness or have shaking of your hands?|هل تحس بثقل بالصدر أو رجفة باليدين؟",
+"+Do you use energy drinks, nicotine, decongestants, inhalers, or stimulants?|هل تستخدم مشروبات طاقة، نيكوتين، أدوية زكام، بخاخات، أو منبهات؟",
+"+Have you had heat intolerance, weight loss, or heavy bleeding?|هل عندك عدم تحمل للحر، نقص وزن، أو نزيف غزير؟"]},
+{id:"faint",g:"cvs",ar:"الإغماء",en:"Fainting",items:[
+"#Before the episode|قبل النوبة",
+"When did you faint? Was this the first time?|متى أغمي عليك؟ وهل كانت أول مرة؟",
+"If it happened before, how many times and under what circumstances?|إذا تكرر قبل، كم مرة وتحت أي ظروف؟",
+"Did you faint suddenly, or did you have any warning?|هل أغمي عليك فجأة أو حسيت بعلامات قبله؟",
+"Did you feel sweaty, nauseated, or vomit beforehand?|هل حسيت بتعرق، غثيان، أو استفرغت قبله؟",
+"Did your vision blur or go dark?|هل تشوش نظرك أو اسودت الرؤية؟",
+"Did you have palpitations or chest pain before you fainted?|هل حسيت بخفقان أو ألم صدر قبل الإغماء؟",
+"Did you completely lose awareness, or could you still hear people?|هل فقدت الوعي تماما أو كنت تسمع الناس حولك؟",
+"If you stayed awake, did the room spin, or did you feel about to faint?|إذا كنت واعي، هل حسيت المكان يدور أو حسيت إنك بتغمى عليك؟",
+"What were you doing just before it happened?|وش كنت تسوي قبل النوبة مباشرة؟",
+"Had you just stood up after sitting or lying down?|هل كنت توك واقف بعد جلوس أو استلقاء؟",
+"Had you been standing for a long time, or were you lying down?|هل كنت واقف مدة طويلة أو كنت مستلقي؟",
+"Did it follow fear, stress, pain, or seeing blood?|هل صار بعد خوف، توتر، ألم، أو رؤية دم؟",
+"Did it happen while urinating, opening your bowels, or coughing?|هل صار أثناء التبول، التبرز، أو الكحة؟",
+"Did it happen during exercise or just afterwards?|هل صار أثناء المجهود أو بعده مباشرة؟",
+"+Had you missed meals, been dehydrated, or had recent bleeding?|هل كنت ما أكلت، عندك جفاف، أو صار لك نزيف مؤخرا؟",
+"#During the episode: ask the witness where possible|أثناء النوبة: اسأل الشاهد إذا أمكن",
+"Was anyone with you? May we ask them what they saw?|هل كان أحد معك؟ ممكن نسأله وش شاف؟",
+"Did the body become stiff or shake? Did the arms or legs jerk?|هل تصلب الجسم أو اهتز؟ وهل تحركت الأطراف بحركات لا إرادية؟",
+"How long was the person unconscious? How long did any jerking last?|كم استمر فقدان الوعي؟ وكم استمرت حركات الأطراف إن وجدت؟",
+"Was there any tongue biting or loss of bladder control?|هل صار عض للسان أو تبول لا إرادي؟",
+"+If the tongue was bitten, was it at the side or the tip?|إذا انعض اللسان، كان بالجانب أو الطرف؟",
+"+Were the eyes open or closed? Did the head turn to one side?|هل كانت العينان مفتوحتين أو مغلقتين؟ وهل التف الرأس لجهة واحدة؟",
+"+Did the person look pale or blue?|هل كان الشخص شاحبا أو لونه مزرقا؟",
+"#After recovery: ask the patient|بعد استعادة الوعي: اسأل المريض",
+"Did you feel normal straight away, or sleepy and confused?|هل رجعت طبيعي مباشرة أو كنت نعسان ومتلخبط؟",
+"How long did it take to feel back to normal?|كم أخذت وقت لين رجعت طبيعي؟",
+"Did you have muscle pain afterwards?|هل صار عندك ألم بالعضلات بعدها؟",
+"+Did you injure yourself, or have weakness or trouble speaking afterwards?|هل انصبت، أو صار ضعف أو صعوبة كلام بعدها؟"]},
+{id:"oedema",g:"cvs",ar:"تورم الكاحل والوذمة",en:"Ankle swelling / oedema",items:[...B,
+"Is the swelling in one leg or both? Is one side worse?|هل التورم برجل واحدة أو الاثنين؟ وهل جهة أكثر؟",
+"Has it spread to your thighs, genital area, or abdomen?|هل امتد للفخذين، المنطقة التناسلية، أو البطن؟",
+"Is your face or the area around your eyes swollen?|هل وجهك أو حول عيونك متورم؟",
+"Is it worse in the morning, in the evening, or after standing?|هل يزيد الصباح، المساء، أو بعد الوقوف؟",
+"Does raising your legs improve it?|هل يخف مع رفع الرجلين؟",
+"Is the swollen area painful? If so, how severe is the pain from 0 to 10?|هل منطقة التورم مؤلمة؟ إذا نعم، كم شدة الألم من صفر لعشرة؟",
+"How does the swelling affect your walking or daily activities?|كيف يؤثر التورم على المشي أو نشاطك اليومي؟",
+"Have you noticed skin colour changes or prominent veins?|هل لاحظت تغير لون الجلد أو بروز الأوردة؟",
+"Have you noticed changes in your urine, especially foam or reduced amount?|هل لاحظت تغيرا بالبول، خصوصا رغوة أو قلة الكمية؟",
+"@AS","@sob","@orth","@pnd","@hypo","@loose","@dysuria","@polyuria","@anuria","@hematuria","@urgency","@leak","@discharge","@fever","@wtloss","@appetite","@flank",
+"Have you noticed marked muscle weakness or new stretch marks on your abdomen?|هل لاحظت ضعفا واضحا بالعضلات أو خطوط تمدد جديدة بالبطن؟",
+"+Is one leg red, warm, or newly painful? Have you had recent immobility or surgery?|هل ساق واحدة حمراء، حارة، أو تؤلمك مؤخرا؟ وهل قلت حركتك أو سويت عملية؟",
+"+Have you started medicines such as amlodipine, anti-inflammatory painkillers, or steroids?|هل بدأت أدوية مثل أملوديبين، مسكنات مضادة للالتهاب، أو كورتيزون؟"]},
+{id:"cough",g:"resp",ar:"الكحة والبلغم",en:"Cough and sputum",items:[...B,
+"Is your cough dry, or do you bring up phlegm?|هل الكحة ناشفة أو معها بلغم؟",
+"If there is phlegm, is it thick or pus-like, clear and sticky, or frothy?|إذا فيه بلغم، هل هو كثيف أو مثل الصديد، شفاف ولزج، أو رغوي؟",
+"What colour is it: clear, yellow, green, or blood-stained?|وش لونه: شفاف، أصفر، أخضر، أو فيه دم؟",
+"How much phlegm do you bring up in a day: teaspoons, tablespoons, or more?|تقريبا كم كمية البلغم باليوم: ملاعق صغيرة، كبيرة، أو أكثر؟",
+"Does the phlegm have an unusual or unpleasant smell?|هل للبلغم رائحة غير معتادة أو كريهة؟",
+"Is the cough worse during the day, at night, or in certain seasons?|هل تزيد الكحة بالنهار، الليل، أو بمواسم معينة؟",
+"How many bouts of coughing do you have each day?|كم نوبة كحة تجيك باليوم؟",
+"Does lying down or changing position make it worse?|هل تزيد مع الاستلقاء أو تغيير وضعيتك؟",
+"Have you tried inhalers or other treatments? Did they help?|هل جربت بخاخات أو علاجات ثانية؟ وهل نفعت؟",
+"Does dust, smoke, exercise, perfume, flowers, or contact with animals trigger it?|هل يثيرها الغبار، الدخان، المجهود، العطور، الأزهار، أو الحيوانات؟",
+"Does coughing hurt? Where?|هل الكحة مؤلمة؟ وين الألم؟",
+"How does it affect your activities or sleep?|كيف تؤثر على نشاطك أو نومك؟",
+"@AS",
+"Do you have a runny or blocked nose, a sore throat, or eye discharge?|هل عندك سيلان أو انسداد بالأنف، ألم حلق، أو إفرازات من العين؟",
+"Do you have pain over your cheeks or forehead?|هل عندك ألم بالخدين أو الجبهة فوق الجيوب؟",
+"@wheeze","@sob","@odyn","@dysphagia","@heartburn","@swell","@orth","@pnd","@fever","@wtloss","@nightsw","@tired",
+"+Have you noticed a change in your voice?|هل لاحظت تغيرا بصوتك؟"]},
+{id:"fever",g:"gen",ar:"الحمى",en:"Fever",items:[
+"How long have you had a fever?|من متى عندك حرارة؟",
+"Is it continuous, or does it come and go?|هل هي مستمرة أو تجي وتروح؟",
+"Have you measured your temperature? What was the highest reading?|هل قست الحرارة؟ كم أعلى قراءة؟",
+"How and where did you measure it?|كيف قستها ومن أي مكان بالجسم؟",
+"Have you had shivering or severe shaking chills?|هل عندك قشعريرة أو رجفة شديدة مع الحرارة؟",
+"@AS","@nightsw","@wtloss","@headache","@cough","@sob","@chest","@loose","@abd","@joint","@rash","@dysuria",
+"Do you have a blocked nose, sinus pain, or a sore throat?|هل عندك انسداد أنف، ألم جيوب، أو ألم حلق؟",
+"Is your cough dry or with phlegm?|هل الكحة ناشفة أو معها بلغم؟",
+"Have you had easy bruising or bleeding from your gums?|هل تطلع لك كدمات بسهولة أو تنزف اللثة؟",
+"+Have you had a stiff neck, confusion, or a severe new headache?|هل عندك تيبس بالرقبة، تشوش، أو صداع جديد شديد؟"]},
+{id:"oliguria",g:"uro",ar:"قلة كمية البول",en:"Reduced urine output",items:[...B,
+"How many times do you pass urine each day?|كم مرة تتبول باليوم؟",
+"Is the total amount smaller than usual? Can you estimate how much?|هل كمية البول الإجمالية أقل من المعتاد؟ تقدر تقدرها؟",
+"Is the reduction more noticeable by day or at night?|هل تلاحظ قلة البول أكثر بالنهار أو الليل؟",
+"Is the urine dark, cloudy, or red? Does it have a strong or unpleasant smell?|هل البول غامق، عكر، أو أحمر؟ وهل رائحته قوية أو كريهة؟",
+"Have you noticed foam or bubbles in the urine?|هل لاحظت رغوة أو فقاعات بالبول؟",
+"Does anything seem to make the problem worse or better?|هل فيه شيء يزيد المشكلة أو يخففها؟",
+"How much fluid are you drinking each day?|كم تشرب سوائل باليوم؟",
+"@AS","@dysuria","@flank","@supra","@urgency","@leak","@discharge",
+"+When did you last pass urine? Do you feel a full bladder but cannot pass urine?|متى آخر مرة تبولت؟ هل تحس المثانة ممتلئة لكن ما تقدر تتبول؟",
+"+Have you had vomiting, diarrhoea, fever, heavy sweating, or bleeding?|هل عندك استفراغ، إسهال، حرارة، تعرق شديد، أو نزيف؟",
+"+Do you have kidney disease, stones, prostate problems, or recent catheter use?|هل عندك مرض كلى، حصوات، مشاكل بروستاتا، أو استخدمت قسطرة مؤخرا؟",
+"+Have you developed swelling or breathlessness?|هل ظهر عندك تورم أو ضيق تنفس؟"]},
+{id:"flank",g:"uro",ar:"ألم الخاصرة",en:"Flank pain",items:[...B,"@where","@pdesc","@pspread","@pwhen","@pworse","@pbetter","@pscale","@paffect",
+"Does the pain come in waves, or is it constant?|هل الألم يجي على شكل موجات مغص أو مستمر؟",
+"Does it happen during the day, at night, or both?|هل يصير بالنهار، الليل، أو الاثنين؟",
+"@AS","@dysuria","@polyuria","@anuria","@hematuria",
+"Does your urine look unusually foamy?|هل لاحظت رغوة غير معتادة بالبول؟",
+"@urgency","@leak","@discharge","@fever","@wtloss","@appetite"]},
+{id:"haematuria",g:"uro",ar:"الدم في البول",en:"Blood in the urine",items:[
+"When did you first notice blood in your urine?|متى أول مرة لاحظت دما بالبول؟",
+"Is the blood at the start, at the end, or throughout urination?|هل الدم بأول التبول، آخره، أو طول التبول؟",
+"Is it bright red, pink, dark brown, or mixed with clots?|هل هو أحمر فاتح، وردي، بني غامق، أو معه كتل دم؟",
+"Is it painful? When does the pain occur?|هل معه ألم؟ ومتى يصير الألم؟",
+"Have you noticed genital discharge or frothy urine?|هل لاحظت إفرازات تناسلية أو رغوة بالبول؟",
+"How often do you pass urine? Is the total amount larger than usual?|كم مرة تتبول؟ وهل الكمية الإجمالية أكثر من المعتاد؟",
+"Do you wake at night to pass urine? How many times?|هل تصحى ليلا للتبول؟ كم مرة؟",
+"Do you have urgency or feel you have not emptied your bladder?|هل عندك إلحاح أو تحس المثانة ما فضت بالكامل؟",
+"Is the urine stream weaker than usual?|هل اندفاع البول أضعف من المعتاد؟",
+"Does anything make the symptoms worse or better?|هل فيه شيء يزيد الأعراض أو يخففها؟",
+"@AS","@flank",
+"Have you had bleeding elsewhere, such as your nose or gums?|هل عندك نزيف من مكان آخر، مثل الأنف أو اللثة؟",
+"@dizzy","@palp","@sob","@fever","@dysuria","@rash","@joint",
+"Have you coughed up blood?|هل خرج دم مع الكحة؟"]},
+{id:"dysuria",g:"uro",ar:"ألم أو حرقان التبول",en:"Painful urination",items:["@start",
+"How would you describe the discomfort? Is it burning?|كيف توصف الانزعاج؟ هل هو حرقان؟",
+"Does it occur at the start, at the end, or throughout urination?|هل يصير بأول التبول، آخره، أو طوله؟",
+"Have you noticed discharge? What colour and consistency is it?|هل لاحظت إفرازات؟ وش لونها وقوامها؟",
+"@hematuria","@worse",
+"How often do you urinate? Are you passing large amounts or frequent small amounts?|كم مرة تتبول؟ هل الكمية كبيرة أو كميات صغيرة متكررة؟",
+"Do you wake at night to urinate?|هل تصحى من النوم للتبول؟",
+"Do you feel urgency or incomplete emptying?|هل عندك إلحاح أو إحساس إن المثانة ما فضت؟",
+"Is the stream weaker than usual?|هل اندفاع البول أضعف من المعتاد؟",
+"@AS","@flank","@swell","@supra",
+"^Do you have pain or swelling in the scrotum?|هل عندك ألم أو تورم بكيس الصفن؟",
+"+Have you had fever, chills, nausea, or vomiting?|هل عندك حرارة، قشعريرة، غثيان، أو استفراغ؟",
+"+Have you had genital sores, itching, or unusual vaginal discharge?|هل عندك تقرحات، حكة تناسلية، أو إفرازات مهبلية غير معتادة؟"]},
+{id:"abdpain",g:"gi",ar:"ألم البطن",en:"Abdominal pain",items:[...B,"@where","@pdesc","@pspread","@pwhen","@pworse","@pbetter","@pscale","@paffect",
+"Does it occur in the morning, at night, or throughout the day?|هل يصير الصباح، الليل، أو طول اليوم؟",
+"@AS","Do you get a burning feeling?|هل تحس بحرقة؟","@nausea","@vomit",
+"Have you vomited blood?|هل استفرغت دما؟",
+"@dysp","@bloat","@constip","@loose","@prbleed","@melena","@fever"]},
+{id:"vomiting",g:"gi",ar:"الاستفراغ",en:"Vomiting",items:[...B,
+"How many times have you vomited each day?|كم مرة تستفرغ باليوم؟",
+"Is it a large or small amount?|هل الكمية كبيرة أو قليلة؟",
+"What does it contain: food, mucus, blood, or something else?|وش فيه: أكل، مخاط، دم، أو شيء ثاني؟",
+"What colour is it: green, yellow, red, or dark like coffee grounds?|وش لونه: أخضر، أصفر، أحمر، أو غامق مثل تفل القهوة؟",
+"@worse",
+"Does it occur in the morning, after eating, or at other times?|هل يصير الصباح، بعد الأكل، أو بأوقات ثانية؟",
+"Do you feel nauseated first, or does it come out suddenly and forcefully?|هل يسبقه غثيان أو يطلع فجأة وبقوة؟",
+"@AS","@heartburn","@abd","@hemat","@dysp","@bloat","@constip","@loose",
+"Are your stools oily, floating, or difficult to flush?|هل البراز دهني، يطفو، أو يصعب تنظيفه بالسيفون؟",
+"@melena","@fever","@wtloss","@headache",
+"Do you feel as if the room is spinning?|هل تحس المكان يدور حولك؟"]},
+{id:"diarrhoea",g:"gi",ar:"الإسهال",en:"Diarrhoea",items:[...B,
+"How many times do you pass stool each day?|كم مرة تتبرز باليوم؟",
+"Is it watery, loose, formed, bloody, or mixed with mucus?|هل البراز مائي، رخو، متماسك، فيه دم، أو مخاط؟",
+"Do you need to rush to the toilet?|هل تجيك حاجة ملحة للحمام؟",
+"Does it happen during the day, at night, or wake you from sleep?|هل يصير بالنهار، الليل، أو يصحيك من النوم؟",
+"@worse",
+"How does it affect your daily activities?|كيف يؤثر على نشاطك اليومي؟",
+"Do you still feel the urge to pass stool after going, or have rectal pain?|هل تحس إنك تحتاج تتبرز حتى بعد ما تخلص، أو عندك ألم بالمستقيم؟",
+"@AS","@heartburn","@nausea","@vomit","@abd","@hemat","@dysp","@bloat","@constip","@melena","@fever","@wtloss","@rash",
+"Do you feel unusually hot, sweaty, shaky, or aware of a racing heart?|هل تحس بحرارة زائدة، تعرق، رجفة، أو تسارع بالقلب؟"]},
+{id:"constipation",g:"gi",ar:"الإمساك",en:"Constipation",items:[
+"When did it start? Is this a change from your usual bowel habit?|متى بدأ؟ وهل يختلف عن طبيعتك المعتادة؟",
+"What do the stools look like? Are they hard or like small pellets?|كيف شكل البراز؟ هل هو صلب أو مثل كرات صغيرة؟",
+"How often do you normally pass stool, and how often now?|عادة كم مرة تتبرز؟ وكم مرة الآن؟",
+"What colour is the stool? Have you noticed blood?|وش لون البراز؟ وهل لاحظت دما؟",
+"Do you need to strain, or use a finger in or around the anus to help stool pass?|هل تحتاج تشد، أو تستخدم إصبعا داخل أو حول الشرج للمساعدة؟",
+"Do you feel you have not emptied your bowels completely? Is there rectal pain?|هل تحس إنك ما أفرغت الأمعاء بالكامل؟ وهل فيه ألم بالمستقيم؟",
+"Can you still pass wind?|هل ما زلت تقدر تطلع غازات؟",
+"@AS","@heartburn","@nausea","@vomit","@abd","@fever","@wtloss","@hypo","@loose"]},
+{id:"dysphagia",g:"gi",ar:"صعوبة البلع",en:"Difficulty swallowing",items:[
+"Where do you feel food getting stuck? Can you point to it?|وين تحس الأكل يعلق؟ تقدر تشير للمكان؟",
+"How long have you had this problem?|من متى عندك هالمشكلة؟",
+"Is it constant or intermittent? Is it worsening, stable, or improving?|هل هي مستمرة أو متقطعة؟ وتزيد، ثابتة، أو تتحسن؟",
+"Is it difficult to swallow solids, liquids, or both?|هل الصعوبة مع الأكل الصلب، السوائل، أو الاثنين؟",
+"@AS","@heartburn","@wtloss","@chest",
+"Do you cough or choke when you start swallowing?|هل تكح أو تشرق أول ما تبدأ تبلع؟",
+"Have you noticed gurgling when you swallow or bad breath?|هل تسمع قرقرة وقت البلع أو لاحظت رائحة فم كريهة؟",
+"Does old, undigested food come back up into your mouth?|هل يرجع أكل قديم غير مهضوم لفمك؟",
+"@odyn",
+"Have you noticed your skin becoming tight?|هل لاحظت شدا أو تصلبا بالجلد؟",
+"+Is it hard to start the swallow, or does food stick after you swallow?|هل الصعوبة في بدء البلع أو يعلق الأكل بعد ما تبلعه؟",
+"+Did difficulty with solids come before difficulty with liquids?|هل بدأت الصعوبة مع الأكل الصلب ثم صارت مع السوائل؟",
+"+Can you swallow your saliva? Have you been drooling?|هل تقدر تبلع ريقك؟ وهل صار يسيل من فمك؟",
+"+Does food or fluid come out of your nose? Has your voice changed?|هل يطلع أكل أو شراب من أنفك؟ وهل تغير صوتك؟"]},
+{id:"jaundice",g:"gi",ar:"اليرقان",en:"Jaundice",items:[
+"When did you first notice yellowing of your eyes or skin? How did it start?|متى لاحظت اصفرار العين أو الجلد؟ وكيف بدأ؟",
+"Have your urine or stools changed colour?|هل تغير لون البول أو البراز؟",
+"Do you have itchy skin?|هل عندك حكة بالجلد؟",
+"@AS","@fever","@wtloss","@appetite","@abd","@vomit",
+"+Is the urine dark and the stool unusually pale or clay-coloured?|هل البول غامق والبراز فاتح جدا أو بلون الطين؟",
+"+Do you have pain in the upper right abdomen or shaking chills?|هل عندك ألم أعلى البطن يمين أو قشعريرة شديدة؟",
+"+Have you noticed confusion, easy bleeding, or increasing abdominal swelling?|هل لاحظت تشوشا، نزيفا بسهولة، أو زيادة انتفاخ البطن؟"]},
+{id:"pr",g:"gi",ar:"البراز الأسود أو النزيف الشرجي",en:"Black stool or rectal bleeding",items:[...B,
+"How often do you pass blood or black stools each day?|كم مرة يطلع دم أو براز أسود باليوم؟",
+"Is the blood bright red, dark red, or is the stool black and tar-like?|هل الدم أحمر فاتح، غامق، أو البراز أسود مثل القطران؟",
+"Is it a small or large amount? Can you estimate it?|هل الكمية قليلة أو كبيرة؟ تقدر تقدرها؟",
+"Does it happen at a particular time or with a bowel movement?|هل يصير بوقت معين أو وقت التبرز؟",
+"@worse",
+"@AS","@hemat","@prbleed","@melena","@bloat","@abd","@heartburn","@nausea","@vomit","@constip","@loose","@wtloss","@dizzy",
+"+Is passing stool painful? Have you noticed an anal lump?|هل التبرز مؤلم؟ وهل فيه كتلة عند فتحة الشرج؟",
+"+Have you felt faint, breathless, or unusually weak?|هل حسيت بقرب إغماء، ضيق نفس، أو ضعف غير معتاد؟"]},
+{id:"haematemesis",g:"gi",ar:"الاستفراغ الدموي",en:"Vomiting blood",items:[
+"When did you first vomit blood?|متى أول مرة استفرغت دما؟",
+"What colour was it: bright red or dark like coffee grounds?|وش لونه: أحمر فاتح أو غامق مثل تفل القهوة؟",
+"Was blood present in the first vomit, or only after repeated vomiting?|هل الدم من أول استفراغ أو ظهر بعد تكرار الاستفراغ؟",
+"How many times have you vomited blood?|كم مرة استفرغت دما؟",
+"Roughly how much blood was there?|تقريبا كم كمية الدم؟",
+"@AS","@prbleed","@melena","@bloat","@abd","@heartburn","@nausea","@wtloss","@dizzy","@vomit","@constip","@loose",
+"+Did you vomit it after nausea or retching, cough it up, or have a nosebleed first?|هل طلع مع غثيان ومحاولة استفراغ، مع الكحة، أو سبقه نزيف أنف؟",
+"+Are you still bleeding? Have you fainted, become breathless, or passed less urine?|هل النزيف مستمر؟ وهل أغمي عليك، ضاق نفسك، أو قل البول؟"]}
+];
+const GROUPS=[["gen","عام","General"],["cvs","القلب والدورة الدموية","Cardiovascular"],["resp","الجهاز التنفسي","Respiratory"],["uro","الكلى والمسالك البولية","Renal and urinary"],["gi","الجهاز الهضمي","Gastrointestinal"]];
+
+const GEN=[
+{id:"pmh",short:"السوابق",ar:"التاريخ المرضي والجراحي السابق",en:"Past medical and surgical history",items:[
+"Have you had similar symptoms before? How many times, and when?|هل صار لك نفس الشيء قبل؟ كم مرة ومتى؟",
+"What was done for those episodes? Did the treatment help?|وش سووا لك وقتها؟ وهل العلاج نفع؟",
+"Do you have diabetes, high blood pressure, high cholesterol, or kidney or lung disease?|هل عندك سكري، ضغط، كوليسترول، أو مرض بالكلى أو الرئة؟",
+"When were these conditions diagnosed?|متى تشخصت بهالأمراض؟",
+"What treatment do you take for them?|وش العلاج اللي تستخدمه لها؟",
+"Have you ever had surgery? What operation, when, where, and why?|هل سويت عملية قبل؟ وش هي، ومتى، ووين، وليش؟",
+"Were there any complications after the operation?|هل صارت مضاعفات بعد العملية؟",
+"Have you been admitted to hospital before? When and why?|هل تنومت بالمستشفى قبل؟ متى وليش؟",
+"What tests or treatments did you receive during that admission?|وش الفحوصات أو العلاجات اللي سووها لك وقت التنويم؟",
+"Have you had any major injuries or accidents?|هل تعرضت لإصابات أو حوادث مهمة؟",
+"Were you born with any medical condition?|هل عندك أي مرض أو مشكلة منذ الولادة؟",
+"Have you ever received a blood transfusion? Why and when?|هل سبق نقلوا لك دم؟ ليش ومتى؟",
+"How many transfusions or units did you receive?|كم مرة نقلوا لك دم، أو كم وحدة أخذت؟",
+"Did you have any reaction or complication from the transfusion?|هل صار تفاعل أو مضاعفات بعد نقل الدم؟"]},
+{id:"meds",short:"الأدوية",ar:"الأدوية والحساسية",en:"Medicines and allergies",items:[
+"What medicines are you currently taking?|وش الأدوية اللي تستخدمها حاليا؟",
+"What is the name and dose of each medicine?|وش اسم وجرعة كل دواء؟",
+"How often do you take it, and how do you take it?|كم مرة تاخذه؟ وكيف تستخدمه: حبوب، إبر، بخاخ، أو غيره؟",
+"How long have you been taking it, and what is it for?|من متى تستخدمه؟ وليش وصف لك؟",
+"Have you noticed any side effects?|هل لاحظت أعراضا جانبية؟",
+"How often do you miss a dose? What makes taking it difficult?|كم مرة تفوتك الجرعة؟ وش اللي يصعب عليك استخدامه؟",
+"Do you take any herbal remedies?|هل تستخدم أعشابا أو خلطات علاجية؟",
+"+Do you use medicines without a prescription, painkillers, vitamins, or supplements?|هل تستخدم أدوية بدون وصفة، مسكنات، فيتامينات، أو مكملات؟",
+"+Have you started, stopped, or changed any medicine recently?|هل بدأت أو أوقفت دواء، أو غيرت جرعته مؤخرا؟",
+"#Allergies|الحساسية",
+"Are you allergic to any medicines, foods, or animals?|هل عندك حساسية من أدوية، أطعمة، أو حيوانات؟",
+"What happens when you are exposed to them?|وش يصير لك إذا تعرضت لها؟",
+"What treatment relieved the reaction?|وش العلاج اللي خفف التحسس؟",
+"+Have you ever needed emergency treatment for an allergy?|هل احتجت علاجا بالطوارئ بسبب الحساسية؟"]},
+{id:"social",short:"الاجتماعي",ar:"التاريخ الاجتماعي والتعرضات",en:"Social history and exposures",items:[
+"What do you do for work or study?|وش طبيعة عملك أو دراستك؟",
+"Where do you live, and who lives with you?|وين تسكن؟ ومع مين؟",
+"Are you married? Do you have a partner or children?|هل أنت متزوج؟ وهل عندك شريك أو أطفال؟",
+"If relevant, how many spouses and children do you have?|إذا كان مناسبا للحالة، كم عدد الزوجات والأطفال؟",
+"#Smoking, alcohol and drugs|التدخين والكحول والمواد",
+"Do you smoke now, or have you smoked in the past?|هل تدخن حاليا أو كنت تدخن سابقا؟",
+"When did you start, and how many cigarettes or packs do you smoke a day?|متى بدأت؟ وكم سيجارة أو علبة تدخن باليوم؟",
+"+If you stopped, when did you stop? Do you use shisha or vaping products?|إذا وقفت، متى؟ وهل تستخدم الشيشة أو الفيب؟",
+"Do you drink alcohol? What type, how much per week, and since when?|هل تشرب كحول؟ وش النوع، وكم أسبوعيا، ومن متى؟",
+"Do you use any recreational drugs? What type and since when?|هل تستخدم أي مواد مخدرة؟ وش النوع ومن متى؟",
+"How much and how often do you use them? When did you last use them?|كم الكمية وكم مرة تستخدمها؟ ومتى آخر استخدام؟",
+"#Lifestyle and exposures|نمط الحياة والتعرضات",
+"Do you exercise? What kind, and how often?|هل تتمرن؟ وش نوع التمرين وكم مرة؟",
+"What is your usual diet like?|كيف طبيعة أكلك المعتاد؟",
+"Have you travelled recently? Where and when?|هل سافرت مؤخرا؟ وين ومتى؟",
+"Do you have pets or contact with animals? What kind?|هل عندك حيوانات أو تتعامل معها؟ وش نوعها؟",
+"+Are you exposed to dust, chemicals, fumes, or sick people at work or home?|هل تتعرض لغبار، مواد كيميائية، أبخرة، أو أشخاص مرضى بالبيت أو العمل؟",
+"#Vaccinations|التطعيمات",
+"Which vaccines have you received, and how many doses of each?|وش التطعيمات اللي أخذتها؟ وكم جرعة من كل نوع؟"]},
+{id:"family",short:"العائلي",ar:"التاريخ العائلي والإنجابي",en:"Family and reproductive history",items:[
+"Are your parents and siblings alive and well? How old are they?|هل الوالدان والإخوة أحياء وبصحة جيدة؟ وكم أعمارهم؟",
+"If a relative has died, at what age and from what cause?|إذا توفي أحد منهم، كم كان عمره وما سبب الوفاة؟",
+"Do any relatives have long-term illnesses?|هل فيه أمراض مزمنة عند أفراد العائلة؟",
+"Has anyone in your family had similar symptoms? Who?|هل أحد بالعائلة صار له أعراض مشابهة؟ مين؟",
+"Are there any inherited conditions in your family? Who is affected?|هل فيه أمراض وراثية بالعائلة؟ ومين عنده المرض؟",
+"#~Menstrual and pregnancy history when relevant|تاريخ الدورة والحمل عند الحاجة",
+"~Are your periods regular? How often do they come and how long do they last?|هل دورتك منتظمة؟ كل كم تجيك وكم يوم تستمر؟",
+"~How heavy is the bleeding? Is it painful?|كم غزارة الدم؟ وهل الدورة مؤلمة؟",
+"~How old were you when your periods started?|كم كان عمرك يوم بدأت الدورة؟",
+"~Have your periods stopped because of menopause? When?|هل انقطعت الدورة بسبب سن اليأس؟ متى؟",
+"+~When was the first day of your last period? Could you be pregnant?|متى أول يوم بآخر دورة؟ وهل فيه احتمال حمل؟",
+"~How many times have you been pregnant?|كم مرة حملت؟",
+"~How many births have you had, and were they vaginal or by caesarean section?|كم ولادة عندك؟ وكانت طبيعية أو قيصرية؟",
+"~Have you had any pregnancy losses or terminations? How many, and what happened?|هل صار فقدان حمل أو إنهاء حمل؟ كم مرة ووش اللي صار؟",
+"~Were there any complications during pregnancy, delivery, or afterwards?|هل صارت مضاعفات بالحمل، الولادة، أو بعدها؟",
+"+~Do you use contraception or hormone treatment?|هل تستخدمين مانع حمل أو علاجا هرمونيا؟"]},
+{id:"ros1",short:"مراجعة الأجهزة ١",ar:"مراجعة الأجهزة الأولى",en:"Review of systems one",items:[
+"#General symptoms|الأعراض العامة","@fever","@tired","@nausea","@nightsw","@appetite","@wtloss",
+"#Nervous system and senses|الجهاز العصبي والحواس",
+"Have you had headaches, numbness, or tingling?|هل عندك صداع، خدر، أو تنميل؟",
+"Have you noticed any changes in your vision or hearing?|هل لاحظت تغيرا بالنظر أو السمع؟",
+"Has your sense of smell or taste changed?|هل تغيرت حاسة الشم أو التذوق؟",
+"Have you lost consciousness or had problems with balance?|هل فقدت الوعي أو صار عندك اختلال بالتوازن؟",
+"+Have you had weakness or difficulty speaking?|هل صار عندك ضعف أو صعوبة بالكلام؟",
+"#Heart and circulation|القلب والدورة الدموية","@sob","@orth","@pnd","@chest","@dizzy","@palp","@swell","@claud",
+"#Respiratory system|الجهاز التنفسي",
+"Have you had a cough, wheezing, or a hoarse voice?|هل عندك كحة، صفير بالتنفس، أو بحة بالصوت؟"]},
+{id:"ros2",short:"مراجعة الأجهزة ٢",ar:"مراجعة الأجهزة الثانية",en:"Review of systems two",items:[
+"#Digestive system|الجهاز الهضمي",
+"Do you have trouble swallowing, heartburn, or vomiting?|هل عندك صعوبة بلع، حرقة، أو استفراغ؟",
+"Have you had abdominal pain, diarrhoea, or constipation?|هل عندك ألم بالبطن، إسهال، أو إمساك؟",
+"Has your abdomen become distended, or do you feel bloated?|هل زاد حجم بطنك أو تحس بانتفاخ وغازات؟",
+"#Muscles and bones|العضلات والعظام",
+"Do you have joint pain, bone pain, or swelling?|هل عندك ألم بالمفاصل أو العظام، أو تورم؟",
+"#Hormones and metabolism|الهرمونات والأيض",
+"Are you more thirsty or hungry than usual?|هل زاد عطشك أو جوعك عن المعتاد؟",
+"Do you find heat or cold harder to tolerate than usual?|هل صرت تتحسس من الحر أو البرد أكثر من المعتاد؟",
+"Have you noticed any swelling in your neck?|هل لاحظت تورما بالرقبة؟",
+"#Blood and skin|الدم والجلد",
+"Do you bleed or bruise easily?|هل تنزف بسهولة أو تطلع لك كدمات بسهولة؟",
+"Have you noticed a rash, changes in skin colour, or dry skin?|هل لاحظت طفحا، تغيرا بلون الجلد، أو جفافا؟",
+"#Urinary system|الجهاز البولي",
+"Is passing urine painful? Has its colour or amount changed?|هل التبول مؤلم؟ وهل تغير لون البول أو كميته؟",
+"Do you urinate more often or wake at night to urinate?|هل تتبول مرات أكثر أو تصحى ليلا للتبول؟",
+"Does urine dribble after you finish?|هل ينزل البول على شكل قطرات بعد ما تخلص؟",
+"Is the stream weak, does it stop and start, or do you need to strain?|هل اندفاع البول ضعيف، يتقطع، أو تحتاج تشد عشان يطلع؟"]},
+{id:"close",short:"الختام",ar:"إنهاء المقابلة",en:"Closing the consultation",items:[
+"*+Let me check that I have understood your story correctly.|خليني أتأكد إني فهمت قصتك بشكل صحيح.",
+"+Do you have any questions or concerns?|هل عندك أسئلة أو شيء مقلقك؟",
+"*Thank you.|شكرا لك."]}
+];
+
+/* ---------- parsing ---------- */
+function P(s){
+  if(s[0]==="@") s=C[s.slice(1)];
+  const it={};
+  while("+#!~^*".includes(s[0])){
+    ({"+":()=>it.added=1,"#":()=>it.head=1,"!":()=>it.note=1,"~":()=>it.fem=1,"^":()=>it.male=1,"*":()=>it.script=1})[s[0]]();
+    s=s.slice(1);
+  }
+  const p=s.split("|"); it.en=p[0]; it.ar=p[1]; return it;
+}
+SYM.forEach(x=>x.items=x.items.map(P));
+GEN.forEach(x=>x.items=x.items.map(P));
+const SYMBY=Object.fromEntries(SYM.map(x=>[x.id,x]));
+const GENBY=Object.fromEntries(GEN.map(x=>[x.id,x]));
+const isQ=it=>!it.head&&!it.note&&!it.script;
+
+const AUX=/^(Do|Does|Is|Are|Have|Has|Did|Was|Were|Can|Could|If you used)\b/;
+function isYN(en){
+  if(!AUX.test(en)||en.includes(": ")) return false;
+  const first=en.split("?")[0];
+  if(/^(Is|Does|Did|Was) (it|the|your)\b/.test(en) && /, .* or /.test(first)) return false;
+  return true;
+}
+
+/* ---------- state ---------- */
+const KEY="hx-draft-v1";
+function fresh(){return {pt:{name:"",age:"",sex:"",nat:"",comf:"",dur:"",came:"",notes:""},sym:[],a:{},step:0}}
+let st=null;
+try{st=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!st||!st.pt) st=fresh();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+
+function steps(){return ["open",...st.sym.map(i=>"s:"+i),...GEN.map(g=>g.id),"sum"]}
+function sec(s){return s.startsWith("s:")?SYMBY[s.slice(2)]:GENBY[s]}
+function label(s){if(s==="open")return "البداية";if(s==="sum")return "الملخص";const x=sec(s);return x.short||x.ar}
+function vis(it){if(it.fem&&st.pt.sex==="m")return false;if(it.male&&st.pt.sex==="f")return false;return true}
+function answered(k){const a=st.a[k];return a&&(a.v||(a.t&&a.t.trim()))}
+function count(s){
+  if(s==="open"||s==="sum") return null;
+  const qs=sec(s).items.filter(it=>isQ(it)&&vis(it));
+  return [qs.filter(it=>answered(it.en)).length,qs.length];
+}
+
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
+let KEYS=[];
+
+/* ---------- rendering ---------- */
+function qHTML(it){
+  const i=KEYS.push(it.en)-1, yn=isYN(it.en), a=st.a[it.en]||{};
+  return `<div class="q${it.added?" add":""}" data-i="${i}">
+    <div class="ar">${it.added?'<span class="plus">+</span>':""}${esc(it.ar)}</div>
+    <div class="en" dir="ltr">${esc(it.en)}</div>
+    <div class="row">${yn?`<div class="yn"><button type="button" data-v="y" class="${a.v==="y"?"on":""}">نعم</button><button type="button" data-v="n" class="${a.v==="n"?"on":""}">لا</button></div>`:""}
+    <input class="t" data-i="${i}" value="${esc(a.t)}" placeholder="${yn?"تفاصيل…":"الإجابة…"}" aria-label="${esc(it.ar)}"></div></div>`;
+}
+function itemsHTML(items){
+  return items.filter(vis).map(it=>{
+    if(it.head) return `<div class="h"><span>${esc(it.ar)}</span><span class="en">${esc(it.en)}</span></div>`;
+    if(it.note) return `<div class="note">${esc(it.ar)}<div class="en" dir="ltr" style="color:inherit;opacity:.8">${esc(it.en)}</div></div>`;
+    if(it.script) return `<div class="script"><div class="ar">${it.added?'<span class="plus">+</span>':""}${esc(it.ar)}</div><div class="en" dir="ltr">${esc(it.en)}</div></div>`;
+    return qHTML(it);
+  }).join("");
+}
+function fieldQ(ar,en,f,ph){
+  return `<div class="q"><div class="ar">${ar}</div><div class="en" dir="ltr">${en}</div><div class="row"><input class="f" data-f="${f}" value="${esc(st.pt[f])}" placeholder="${ph}"></div></div>`;
+}
+
+function openHTML(){
+  const p=st.pt;
+  const groups=GROUPS.map(([g,ar,en])=>{
+    const list=SYM.filter(s=>s.g===g);
+    return `<div class="grp"><div>${ar} <span dir="ltr">· ${en}</span></div><div class="chips">${list.map(s=>{
+      const n=st.sym.indexOf(s.id);
+      return `<button type="button" data-sym="${s.id}" class="${n>-1?"on":""}">${esc(s.ar)}${n>-1?`<span class="n">${n+1}</span>`:""}<small>${esc(s.en)}</small></button>`}).join("")}</div></div>`}).join("");
+  const comf={en:"Are you comfortable before we start?",ar:"هل أنت مرتاح قبل ما نبدأ؟"};
+  return `<div class="kick">التاريخ العام</div><h1>البداية والشكوى الرئيسية</h1><div class="en">Opening and presenting complaint</div>
+  <details class="tips"><summary>طريقة استخدام الدليل</summary><ul>
+    <li>ابدأ بسؤال مفتوح، واستخدم الأمثلة فقط إذا احتجت توضيحا.</li>
+    <li>اسأل سؤالا واحدا كل مرة، واختر الأسئلة المناسبة للحالة. ما يلزم تعبي كل شيء.</li>
+    <li>علامة + تميز السؤال أو الملاحظة المضافة.</li>
+    <li>هذا دليل للتعلم؛ الإجابات توجه التقييم ولا تكفي وحدها للتشخيص.</li>
+    <li>إذا كانت حالة المريض غير مستقرة، اطلب المساعدة الطبية فورا قبل إكمال التاريخ.</li>
+    <li>حافظ على الخصوصية واستأذن قبل الأسئلة الحساسة.</li></ul></details>
+  <div class="script"><div class="ar">السلام عليكم، اسمي ____، وأنا طالب طب.</div><div class="en" dir="ltr">Hello, my name is ____. I am a medical student.</div></div>
+  <div class="script"><div class="ar">تسمح لي أسألك بعض الأسئلة عن صحتك؟</div><div class="en" dir="ltr">May I ask you some questions about your health?</div></div>
+  <div class="q"><div class="ar">ما اسمك الكامل؟ وكم عمرك؟ ما جنسيتك؟</div><div class="en" dir="ltr">What is your full name, and how old are you? What is your nationality?</div>
+    <div class="fields">
+      <label>الاسم<input class="f" data-f="name" value="${esc(p.name)}"></label>
+      <label>العمر<input class="f" data-f="age" inputmode="numeric" value="${esc(p.age)}"></label>
+      <label>الجنسية<input class="f" data-f="nat" value="${esc(p.nat)}"></label>
+      <label>الجنس<div class="seg"><button type="button" data-sex="m" class="${p.sex==="m"?"on":""}">ذكر</button><button type="button" data-sex="f" class="${p.sex==="f"?"on":""}">أنثى</button></div></label>
+    </div></div>
+  <div class="q"><div class="ar">${comf.ar}</div><div class="en" dir="ltr">${comf.en}</div><div class="row"><input class="f" data-f="comf" value="${esc(p.comf)}" placeholder="الإجابة…"></div></div>
+  <div class="pick"><div class="ar">وش المشكلة اللي جابتك للعيادة اليوم؟</div><div class="en" dir="ltr">What brought you to the clinic today? Pick the symptoms; their questions come next, before the past history.</div>${groups}</div>
+  ${fieldQ("من متى وأنت تعاني من هالمشكلة؟","How long have you had this problem?","dur","المدة…")}
+  ${fieldQ("كيف جيت؟","How did you come?","came","الإجابة…")}`;
+}
+
+function sumHTML(){
+  return `<div class="kick">النهاية</div><h1>الملخص</h1><div class="en">Summary in English, built from your answers. Only answered questions appear.</div>
+  <div class="q"><div class="ar">ملاحظات إضافية</div><div class="en" dir="ltr">Additional notes or impression</div><div class="row"><textarea class="f" data-f="notes" placeholder="اكتب أي ملاحظة…">${esc(st.pt.notes)}</textarea></div></div>
+  <div class="acts"><button type="button" class="pri" id="copy">نسخ الملخص</button></div>
+  <div class="sum" id="sumtext">${esc(buildSummary())}</div>`;
+}
+
+function render(){
+  const S=steps(); st.step=Math.max(0,Math.min(st.step,S.length-1)); const s=S[st.step];
+  KEYS=[];
+  let h;
+  if(s==="open") h=openHTML();
+  else if(s==="sum") h=sumHTML();
+  else{
+    const x=sec(s), isSym=s.startsWith("s:");
+    const kick=isSym?`أسئلة العرض ${st.sym.indexOf(x.id)+1} من ${st.sym.length}`:"التاريخ العام";
+    h=`<div class="kick">${kick}</div><h1>${esc(x.ar)}</h1><div class="en">${esc(x.en)}</div>${itemsHTML(x.items)}`;
+  }
+  $("main").innerHTML=h;
+  renderNav();
+  save();
+}
+function renderNav(){
+  const S=steps();
+  $("steps").innerHTML=S.map((s,i)=>{const c=count(s);return `<button type="button" data-step="${i}" class="${i===st.step?"cur":""} ${s.startsWith("s:")?"sym":""}">${esc(label(s))}${c&&c[0]?`<small>${c[0]}/${c[1]}</small>`:""}</button>`}).join("");
+  const cur=$("steps").querySelector(".cur"); if(cur) cur.scrollIntoView({block:"nearest",inline:"center"});
+  $("prev").disabled=st.step===0;
+  const last=st.step===S.length-1;
+  $("next").disabled=last;
+  $("next").textContent=st.step===S.length-2?"الملخص":"التالي";
+  $("pos").textContent=`${st.step+1} / ${S.length}`;
+}
+function go(i){st.step=i;render();window.scrollTo(0,0)}
+
+/* ---------- summary ---------- */
+function block(x,seen,L,title){
+  const det=[],pos=[],neg=[];
+  x.items.forEach(it=>{
+    if(!isQ(it)||!vis(it)||seen.has(it.en)||!answered(it.en)) return;
+    seen.add(it.en);
+    const a=st.a[it.en], t=(a.t||"").trim();
+    if(a.v==="y") pos.push(`  (+) ${it.en}${t?" — "+t:""}`);
+    else if(a.v==="n") neg.push(`  (−) ${it.en}${t?" — "+t:""}`);
+    else det.push(`  • ${it.en} → ${t}`);
+  });
+  if(!det.length&&!pos.length&&!neg.length) return;
+  L.push(title);
+  L.push(...det);
+  if(pos.length){L.push("  Positive:");L.push(...pos.map(l=>"  "+l))}
+  if(neg.length){L.push("  Negative:");L.push(...neg.map(l=>"  "+l))}
+  L.push("");
+}
+function buildSummary(){
+  const p=st.pt,L=[],seen=new Set();
+  const sex=p.sex==="m"?"Male":p.sex==="f"?"Female":"—";
+  L.push("HISTORY SUMMARY  ("+new Date().toLocaleDateString("en-GB")+")","");
+  L.push("Patient: "+(p.name||"—"),"Age: "+(p.age||"—")+"   Sex: "+sex+"   Nationality: "+(p.nat||"—"),"");
+  L.push("Presenting complaint: "+(st.sym.map(i=>SYMBY[i].en).join(", ")||"—"));
+  L.push("Duration: "+(p.dur||"—"));
+  if(p.came) L.push("Arrived: "+p.came);
+  L.push("");
+  if(st.sym.length){
+    L.push("HISTORY OF PRESENTING ILLNESS","");
+    st.sym.forEach(i=>block(SYMBY[i],seen,L,"▸ "+SYMBY[i].en));
+  }
+  GEN.filter(g=>g.id!=="close").forEach(g=>block(g,seen,L,g.en.toUpperCase()));
+  block(GENBY.close,seen,L,"CLOSING");
+  if(p.notes&&p.notes.trim()) L.push("NOTES",p.notes.trim(),"");
+  return L.join("\n").trim();
+}
+
+/* ---------- events ---------- */
+$("main").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.v){
+    const k=KEYS[b.closest(".q").dataset.i], a=st.a[k]||(st.a[k]={});
+    a.v=a.v===b.dataset.v?"":b.dataset.v;
+    b.parentNode.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.v===a.v));
+    save(); renderNav(); return;
+  }
+  if(b.dataset.sym){
+    const id=b.dataset.sym, n=st.sym.indexOf(id);
+    if(n>-1) st.sym.splice(n,1); else st.sym.push(id);
+    const y=window.scrollY; render(); window.scrollTo(0,y); return;
+  }
+  if(b.dataset.sex){
+    st.pt.sex=st.pt.sex===b.dataset.sex?"":b.dataset.sex;
+    b.parentNode.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.sex===st.pt.sex));
+    save(); renderNav(); return;
+  }
+  if(b.id==="copy") copySummary(b);
+});
+$("main").addEventListener("input",e=>{
+  const t=e.target;
+  if(t.classList.contains("t")){
+    const k=KEYS[t.dataset.i], a=st.a[k]||(st.a[k]={}); a.t=t.value; save(); renderNav();
+  }else if(t.dataset.f){
+    st.pt[t.dataset.f]=t.value; save();
+    if(t.dataset.f==="notes"){const s=$("sumtext"); if(s) s.textContent=buildSummary();}
+  }
+});
+$("steps").addEventListener("click",e=>{const b=e.target.closest("button[data-step]"); if(b) go(+b.dataset.step)});
+$("prev").onclick=()=>go(st.step-1);
+$("next").onclick=()=>go(st.step+1);
+
+let armed=null;
+$("newPt").onclick=()=>{
+  const b=$("newPt");
+  if(!armed){b.textContent="أكيد؟ اضغط مرة ثانية";b.classList.add("warn");armed=setTimeout(()=>{armed=null;b.textContent="مريض جديد";b.classList.remove("warn")},3000);return}
+  clearTimeout(armed);armed=null;b.textContent="مريض جديد";b.classList.remove("warn");
+  st=fresh();go(0);
+};
+
+function copySummary(btn){
+  const text=buildSummary();
+  const done=()=>{btn.textContent="تم النسخ";setTimeout(()=>btn.textContent="نسخ الملخص",1800)};
+  const fallback=()=>{
+    const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+    let ok=false;try{ok=document.execCommand("copy")}catch(e){}
+    ta.remove();
+    if(ok) done(); else {const r=document.createRange();r.selectNodeContents($("sumtext"));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="النص محدد، انسخه يدويا"}
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,fallback); else fallback();
+}
+
+render();
+</script>
+</body>
+</html>
